@@ -90,8 +90,8 @@ function App(){
   return (
     <div className="container">
       <h1>AREA 52: SECRET PROGRAM</h1>
-      <p style={{opacity:.8,maxWidth:720,margin:"12px auto 0"}}>
-        Tap or hold to harvest alien energy, fund hidden experiments, unlock forbidden technologies, and advance your Research Tree.
+      <p style={{opacity:.8,maxWidth:420,margin:"12px auto 0"}}>
+        Tap to gather alien energy, fund secret experiments and unlock forbidden tech.
       </p>
 
       <div style={{marginTop:18, display:"flex", flexWrap:"wrap", gap:12, justifyContent:"center"}}>
