@@ -17,25 +17,50 @@
       color: #fff;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
+    @keyframes gradientShift {
+      0%,100% { background-position: 0 0, 0 0, 0 0; }
+      50% { background-position: 10% -10%, -10% 5%, 0 0; }
+    }
     .bg-gradient { position: fixed; inset: 0; pointer-events: none; opacity: .9;
       background:
         radial-gradient(1200px 800px at 120% -20%, var(--bg3), transparent 60%),
         radial-gradient(1000px 600px at -20% 10%, var(--bg2), transparent 55%),
         linear-gradient(180deg, var(--bg1), var(--bg0));
+      animation: gradientShift 30s ease-in-out infinite;
+    }
+    @keyframes starMove {
+      from { background-position: 0 0; }
+      to { background-position: -1000px 1000px; }
+    }
+    @keyframes starTwinkle {
+      0%,100% { opacity: .4; }
+      50% { opacity: .8; }
     }
     .stars {
-      position: fixed; inset: 0; pointer-events:none; opacity:.5;
+      position: fixed; inset: 0; pointer-events:none; opacity:.6;
       background-image:
         radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.9), rgba(255,255,255,0)),
         radial-gradient(1.5px 1.5px at 70% 20%, rgba(255,255,255,.7), rgba(255,255,255,0)),
         radial-gradient(1.2px 1.2px at 40% 70%, rgba(255,255,255,.6), rgba(255,255,255,0)),
         radial-gradient(2px 2px at 85% 60%, rgba(255,255,255,.8), rgba(255,255,255,0));
-      background-repeat: no-repeat;
+      background-repeat: repeat;
+      background-size: 200% 200%;
+      animation: starMove 200s linear infinite, starTwinkle 5s ease-in-out infinite;
+    }
+    .ufo {
+      position: fixed; top: 25%; left: -100px; font-size: 32px; opacity: 0; pointer-events: none;
+      filter: drop-shadow(0 0 6px var(--accent));
+    }
+    .ufo.flying { animation: fly 12s linear forwards; }
+    @keyframes fly {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(100vw + 200px)); }
     }
     .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 24px; text-align: center; }
     h1 { letter-spacing: .35em; text-transform: uppercase; }
     .pill { border: 1px solid #ffffff1a; padding: 10px 14px; border-radius: 12px; background: #00000066; display: inline-block; margin: 4px; text-transform: uppercase; letter-spacing: .2em; font-size: 12px;}
-    .btn { border: none; padding: 18px 24px; font-weight: 800; border-radius: 18px; cursor: pointer; background: var(--accent); color: #000; text-transform: uppercase; letter-spacing: .25em; }
+    .btn { border: none; padding: 18px 24px; font-weight: 800; border-radius: 18px; cursor: pointer; background: var(--accent); color: #000; text-transform: uppercase; letter-spacing: .25em; transition: transform .1s, box-shadow .3s; }
+    .btn:hover:not([disabled]) { transform: translateY(-2px); box-shadow: 0 0 8px var(--accent); }
     .btn:active { transform: translateY(1px); }
     .btn[disabled] { opacity: .4; cursor: not-allowed; }
     .btn-outline { background: transparent; border: 1px solid #ffffff99; color: #fff; }
@@ -52,6 +77,7 @@
 <body>
   <div class="bg-gradient"></div>
   <div class="stars"></div>
+  <div id="ufo" class="ufo">🛸</div>
   <div id="root"></div>
 
   <!-- React & Babel CDN (no build step) -->
@@ -65,6 +91,17 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
+  </script>
+  <script>
+    const ufoEl = document.getElementById('ufo');
+    function launchUfo(){
+      if(ufoEl.classList.contains('flying')) return;
+      ufoEl.classList.add('flying');
+      ufoEl.addEventListener('animationend', () => {
+        ufoEl.classList.remove('flying');
+      }, {once:true});
+    }
+    setInterval(() => { if(Math.random() < 0.01) launchUfo(); }, 10000);
   </script>
 </body>
 </html>
