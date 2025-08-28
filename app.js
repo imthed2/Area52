@@ -23,6 +23,11 @@ const CONTRACTS=[
   {id:"c1",goal:"Generate 10K Energy",req:(s)=>s.energy>=10000,reward:{rp:1}},
   {id:"c2",goal:"Buy 5 upgrades",req:(s)=>Object.values(s.owned).reduce((a,b)=>a+b,0)>=5,reward:{rp:2}},
 ];
+const MILESTONES=[
+  {threshold:10000,key:'hull'},
+  {threshold:25000,key:'engine'},
+  {threshold:50000,key:'bridge'},
+];
 
 function SectionTitle({children}){ return <div className="section-title"><div className="dot"></div><h2>{children}</h2></div>; }
 function Pill({children}){ return <div className="pill">{children}</div>; }
@@ -32,6 +37,7 @@ function App(){
   const [energy,setEnergy]=useState(0),[clickPower,setClickPower]=useState(1),[autoPerSec,setAutoPerSec]=useState(0),[mult,setMult]=useState(1),[owned,setOwned]=useState({}),[rp,setRp]=useState(0),[prestiges,setPrestiges]=useState(0);
   const [research,setResearch]=useState({tapBoost:0,autoBoost:0,multBoost:0});
   const [completedContracts,setCompletedContracts]=useState([]);
+  const [unlockedParts,setUnlockedParts]=useState([]);
   const [displayEnergy,setDisplayEnergy]=useState(0);
   const holdRef = useRef(null);
   const animRef = useRef(null);
@@ -55,9 +61,10 @@ function App(){
       setOwned(s.owned??{}); setRp(s.rp??0); setPrestiges(s.prestiges??0);
       setResearch(s.research??{tapBoost:0,autoBoost:0,multBoost:0});
       setCompletedContracts(s.completedContracts??[]);
+      setUnlockedParts(s.unlockedParts??[]);
     }catch(e){} } },[]);
-  useEffect(()=>{ localStorage.setItem("area52-pwa-save-v2", JSON.stringify({energy,clickPower,autoPerSec,mult,owned,rp,prestiges,research,completedContracts})); },
-    [energy,clickPower,autoPerSec,mult,owned,rp,prestiges,research,completedContracts]);
+  useEffect(()=>{ localStorage.setItem("area52-pwa-save-v2", JSON.stringify({energy,clickPower,autoPerSec,mult,owned,rp,prestiges,research,completedContracts,unlockedParts})); },
+    [energy,clickPower,autoPerSec,mult,owned,rp,prestiges,research,completedContracts,unlockedParts]);
   useEffect(()=>{ particleLayerRef.current=document.getElementById('particles'); },[]);
   useEffect(()=>{
     const from=displayEnergy;
@@ -82,6 +89,11 @@ function App(){
   useEffect(()=>{ const t=setInterval(()=>{ setEnergy(e=>e+Math.floor(autoPerSec*(1+research.autoBoost)*(1+rp*0.02+research.multBoost+(mult-1)))) },1000);
     return ()=>clearInterval(t);
   },[autoPerSec,mult,rp,research]);
+
+  useEffect(()=>{
+    const newlyUnlocked=MILESTONES.filter(m=>energy>=m.threshold && !unlockedParts.includes(m.key)).map(m=>m.key);
+    if(newlyUnlocked.length) setUnlockedParts(p=>[...p,...newlyUnlocked]);
+  },[energy,unlockedParts]);
 
   const totalMult=useMemo(()=>1+rp*0.02+research.multBoost+(mult-1),[rp,mult,research]);
   const spawnParticles=()=>{
@@ -123,6 +135,7 @@ function App(){
     const g=prestigeGain(energy);
     setRp(x=>x+g); setPrestiges(p=>p+1);
     setEnergy(0); setClickPower(1); setAutoPerSec(0); setMult(1); setOwned({});
+    setUnlockedParts([]);
   };
 
   const progressToPrestige=Math.min(100,(energy/50000)*100);
