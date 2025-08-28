@@ -149,8 +149,10 @@
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
+      * { animation: none !important; }
       .progress .fill.striped { background-image: linear-gradient(90deg,var(--accent),#fff); }
+      .ufo-part.visible,
+      .base-part.visible { animation: none; }
     }
 
     @media(max-width:480px){
@@ -162,7 +164,23 @@
 
     /* Visual milestone progress */
     #visual-progress{ position:fixed; bottom:20px; right:20px; z-index:2; display:flex; flex-direction:column; gap:8px; align-items:center; }
-    .ufo-part{ width:80px; }
+    .ufo-part,
+    .base-part {
+      position:absolute;
+      width:80px;
+      opacity:0;
+      transition:opacity 300ms;
+    }
+    .ufo-part.visible,
+    .base-part.visible {
+      opacity:1;
+      transform:translateY(0);
+      animation:idleFloat 6s ease-in-out infinite;
+    }
+    @keyframes idleFloat {
+      0%,100% { transform:translateY(0); }
+      50% { transform:translateY(-6px); }
+    }
     .hidden{ display:none; }
   </style>
 </head>
