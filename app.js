@@ -139,6 +139,7 @@ function App(){
       </p>
 
       <div className="harvest-zone" style={{marginTop:18, display:"flex", flexDirection:"column", alignItems:"center", gap:12}}>
+        <div className="spotlight"></div>
         <div className="energy-big">{fmt(Math.floor(displayEnergy))}<span className="energy-unit">E</span></div>
         <button id="harvest-btn" ref={btnRef} className="btn"
           onClick={handleTap}
