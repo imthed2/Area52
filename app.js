@@ -95,6 +95,13 @@ function App(){
     if(newlyUnlocked.length) setUnlockedParts(p=>[...p,...newlyUnlocked]);
   },[energy,unlockedParts]);
 
+  useEffect(()=>{
+    unlockedParts.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.classList.remove('hidden');
+    });
+  },[unlockedParts]);
+
   const totalMult=useMemo(()=>1+rp*0.02+research.multBoost+(mult-1),[rp,mult,research]);
   const spawnParticles=()=>{
     const layer=particleLayerRef.current,btn=btnRef.current; if(!layer||!btn) return;

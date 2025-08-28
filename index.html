@@ -159,6 +159,11 @@
       .btn{ font-size:12px; padding:14px 18px; letter-spacing:.2em; }
       #harvest-btn{ font-size:14px; padding:18px 24px; }
     }
+
+    /* Visual milestone progress */
+    #visual-progress{ position:fixed; bottom:20px; right:20px; z-index:2; display:flex; flex-direction:column; gap:8px; align-items:center; }
+    .ufo-part{ width:80px; }
+    .hidden{ display:none; }
   </style>
 </head>
 <body>
@@ -168,6 +173,11 @@
   <div class="stars-front"></div>
   <div id="particles"></div>
   <div id="root"></div>
+  <div id="visual-progress">
+    <img id="hull" class="ufo-part hidden" src="ufo-hull.svg" alt="UFO Hull">
+    <img id="engine" class="ufo-part hidden" src="ufo-engine.svg" alt="UFO Engine">
+    <img id="bridge" class="ufo-part hidden" src="ufo-bridge.svg" alt="UFO Bridge">
+  </div>
   <button id="update-btn" class="btn btn-outline update-btn">Update</button>
 
   <!-- React & Babel CDN (no build step) -->
