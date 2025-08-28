@@ -177,11 +177,35 @@
       transform:translateY(0);
       animation:idleFloat 6s ease-in-out infinite;
     }
+    .ufo-part.pulse {
+      animation:partPulse 600ms;
+    }
+    @keyframes partPulse {
+      0% { filter:brightness(1); transform:scale(1); }
+      50% { filter:brightness(2); transform:scale(1.2); }
+      100% { filter:brightness(1); transform:scale(1); }
+    }
     @keyframes idleFloat {
       0%,100% { transform:translateY(0); }
       50% { transform:translateY(-6px); }
     }
     .hidden{ display:none; }
+
+    .toast {
+      position:fixed;
+      bottom:80px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#000000cc;
+      padding:12px 20px;
+      border-radius:12px;
+      border:1px solid #ffffff1a;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 200ms;
+      z-index:3;
+    }
+    .toast.show { opacity:1; }
   </style>
 </head>
 <body>
