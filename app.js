@@ -106,6 +106,7 @@ function App(){
         const el=document.getElementById(m.key);
         if(el){
           el.classList.remove('hidden');
+          el.classList.add('visible');
           el.classList.add('pulse');
           spawnParticles(el);
           el.addEventListener('animationend',()=>el.classList.remove('pulse'),{once:true});
@@ -120,7 +121,10 @@ function App(){
   useEffect(()=>{
     unlockedParts.forEach(id=>{
       const el=document.getElementById(id);
-      if(el) el.classList.remove('hidden');
+      if(el){
+        el.classList.remove('hidden');
+        el.classList.add('visible');
+      }
     });
   },[unlockedParts]);
 
@@ -165,6 +169,10 @@ function App(){
     setRp(x=>x+g); setPrestiges(p=>p+1);
     setEnergy(0); setClickPower(1); setAutoPerSec(0); setMult(1); setOwned({});
     setUnlockedParts([]);
+    document.querySelectorAll('.ufo-part.visible,.base-part.visible').forEach(el=>{
+      el.classList.remove('visible');
+      el.classList.add('hidden');
+    });
   };
 
   const progressToPrestige=Math.min(100,(energy/50000)*100);
