@@ -77,14 +77,16 @@
     @keyframes stripeMove { from{background-position:0 0,0 0;} to{background-position:200% 0,40px 0;} }
 
     /* BIG ENERGY (above button) */
-    .energy-big {
-      font-weight: 900;
-      letter-spacing: .06em;
-      font-size: clamp(28px, 6vw, 56px);
-      line-height: 1.1;
-      margin: 6px 0 0;
-    }
-    .energy-unit { font-size: 0.5em; opacity: .8; margin-left: .4em; }
+      .energy-big {
+        font-weight: 900;
+        letter-spacing: .06em;
+        font-size: clamp(28px, 6vw, 56px);
+        line-height: 1.1;
+        margin: 6px 0 0;
+        color: var(--accent);
+        text-shadow: 0 0 12px var(--accent);
+      }
+      .energy-unit { font-size: 0.5em; opacity: .8; margin-left: .4em; }
 
     /* Button micro-interactions */
     .btn:active { transform: scale(0.96); }
