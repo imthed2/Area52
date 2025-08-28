@@ -138,17 +138,19 @@ function App(){
         Tap to gather alien energy, fund secret experiments and unlock forbidden tech.
       </p>
 
-      <div style={{marginTop:18, display:"flex", flexWrap:"wrap", gap:12, justifyContent:"center"}}>
+      <div className="harvest-zone" style={{marginTop:18, display:"flex", flexDirection:"column", alignItems:"center", gap:12}}>
+        <div className="energy-big">{fmt(Math.floor(displayEnergy))}<span className="energy-unit">E</span></div>
         <button id="harvest-btn" ref={btnRef} className="btn"
           onClick={handleTap}
           onMouseDown={startHold} onMouseUp={stopHold} onMouseLeave={stopHold}
           onTouchStart={startHold} onTouchEnd={stopHold}
         >👽 Harvest Energy</button>
 
-        <Pill>Energy: <span style={{color:ACCENT, marginLeft:8}}>{fmt(Math.floor(displayEnergy))}</span></Pill>
-        <Pill>Click Power: <span style={{color:ACCENT, marginLeft:8}}>{fmt(clickPower)}×</span></Pill>
-        <Pill>Auto/sec: <span style={{color:ACCENT, marginLeft:8}}>{fmt(Math.floor(autoPerSec*totalMult))}</span></Pill>
-        <Pill>Global Mult: <span style={{color:ACCENT, marginLeft:8}}>{totalMult.toFixed(2)}×</span></Pill>
+        <div style={{display:"flex", flexWrap:"wrap", gap:12, justifyContent:"center"}}>
+          <Pill>Click Power: <span style={{color:ACCENT, marginLeft:8}}>{fmt(clickPower)}×</span></Pill>
+          <Pill>Auto/sec: <span style={{color:ACCENT, marginLeft:8}}>{fmt(Math.floor(autoPerSec*totalMult))}</span></Pill>
+          <Pill>Global Mult: <span style={{color:ACCENT, marginLeft:8}}>{totalMult.toFixed(2)}×</span></Pill>
+        </div>
       </div>
 
       {/* Upgrades close to main button */}
