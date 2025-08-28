@@ -39,12 +39,20 @@ function App(){
   const [completedContracts,setCompletedContracts]=useState([]);
   const [unlockedParts,setUnlockedParts]=useState([]);
   const [displayEnergy,setDisplayEnergy]=useState(0);
+  const [toastMsg,setToastMsg]=useState("");
   const holdRef = useRef(null);
   const animRef = useRef(null);
   const btnRef = useRef(null);
   const badgeRefs = useRef({});
   const particleLayerRef = useRef(null);
   const lastParticleRef = useRef(0);
+  const toastTimerRef = useRef(null);
+
+  const setToast=(msg)=>{
+    setToastMsg(msg);
+    if(toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current=setTimeout(()=>setToastMsg(""),3000);
+  };
 
   // self-tests (console)
   useEffect(()=>{try{
@@ -84,6 +92,7 @@ function App(){
     animRef.current=requestAnimationFrame(step);
   },[energy]);
   useEffect(()=>()=>cancelAnimationFrame(animRef.current),[]);
+  useEffect(()=>()=>clearTimeout(toastTimerRef.current),[]);
 
   // passive income
   useEffect(()=>{ const t=setInterval(()=>{ setEnergy(e=>e+Math.floor(autoPerSec*(1+research.autoBoost)*(1+rp*0.02+research.multBoost+(mult-1)))) },1000);
@@ -91,8 +100,21 @@ function App(){
   },[autoPerSec,mult,rp,research]);
 
   useEffect(()=>{
-    const newlyUnlocked=MILESTONES.filter(m=>energy>=m.threshold && !unlockedParts.includes(m.key)).map(m=>m.key);
-    if(newlyUnlocked.length) setUnlockedParts(p=>[...p,...newlyUnlocked]);
+    const newlyUnlocked=MILESTONES.filter(m=>energy>=m.threshold && !unlockedParts.includes(m.key));
+    if(newlyUnlocked.length){
+      newlyUnlocked.forEach(m=>{
+        const el=document.getElementById(m.key);
+        if(el){
+          el.classList.remove('hidden');
+          el.classList.add('pulse');
+          spawnParticles(el);
+          el.addEventListener('animationend',()=>el.classList.remove('pulse'),{once:true});
+        }
+        const msg={hull:'UFO Hull Assembled!',engine:'UFO Engine Powered!',bridge:'UFO Bridge Online!'}[m.key];
+        setToast(msg||'Milestone unlocked!');
+      });
+      setUnlockedParts(p=>[...p,...newlyUnlocked.map(m=>m.key)]);
+    }
   },[energy,unlockedParts]);
 
   useEffect(()=>{
@@ -103,10 +125,10 @@ function App(){
   },[unlockedParts]);
 
   const totalMult=useMemo(()=>1+rp*0.02+research.multBoost+(mult-1),[rp,mult,research]);
-  const spawnParticles=()=>{
-    const layer=particleLayerRef.current,btn=btnRef.current; if(!layer||!btn) return;
-    const now=performance.now(); if(now-lastParticleRef.current<100) return; lastParticleRef.current=now;
-    const rect=btn.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const spawnParticles=(srcEl)=>{
+    const layer=particleLayerRef.current,el=srcEl||btnRef.current; if(!layer||!el) return;
+    if(!srcEl){ const now=performance.now(); if(now-lastParticleRef.current<100) return; lastParticleRef.current=now; }
+    const rect=el.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
     const count=6+Math.floor(Math.random()*5);
     for(let i=0;i<count;i++){
       const p=document.createElement('span'); p.className='particle';
@@ -152,6 +174,7 @@ function App(){
   const buyResearch=(node)=>{ if(rp<node.cost) return; setRp(rp-node.cost); setResearch(node.effect(research)); };
 
   return (
+    <>
     <div className="container">
       <h1>AREA 52: SECRET PROGRAM</h1>
       <p style={{opacity:.8,maxWidth:420,margin:"12px auto 0"}}>
@@ -246,6 +269,8 @@ function App(){
 
       <div style={{height:40}}></div>
     </div>
+    <div className={`toast${toastMsg?" show":""}`}>{toastMsg}</div>
+    </>
   );
 }
 
